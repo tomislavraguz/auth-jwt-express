@@ -67,12 +67,13 @@ app.use(jwtMiddleware)
 app.post('/login', async (req, res) => {
 	...auth logic
 	const userId = "615f742e884c0dc546ab747a"
-	await req.authJWT.generate(userId)
+	const { data } = await req.authJWT.generate(userId);
+  res.json(data)
 })
 
 app.get('/me',async (req, res) => {
 	const user = await req.authJWT.getData()
-	res,json(user)
+	res.json(user)
 })
 ```
 
