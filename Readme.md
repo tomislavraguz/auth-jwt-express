@@ -22,40 +22,40 @@ import { User } from  '../segments/user/user.model';
 export  const  jwtAuth = new  JWTAuth<string, UserSession>({
   ////secret generated via > openssl rand -base64 64
   secret:  "fnh0X8EK8Qi+g8Rye6/AJ3B/GqODvihkrkHXpEl3eC+TD1yPT+EsJ6aMmzF8bFmSnhjQGjFMGAsTdHHnjDxH6Q==",
-	getJWTData:  async (userId: string, oiat: number) => {
-		const  userDoc = await  User.findById(new ObjectId(userId))
-		if(!userDoc) {
-			throw  Error(`User ${userID} not found`)
-		}
-		return  userDoc.toObject({ virtuals:  true });
-	},
-	dataRefreshIntervalInSeconds:  15 * 60,
-	cookieConfig: {
-		useCookie:  true,
-		CSRFProtection: {
-			customHeader: { active:  true }
-			/* 
-			you can choose from several defense techniques for your use case, 
-			we use customHeader here making our api only available through AJAX calls
-			Read more at owasp.org
-			*/
-		}
-	}
+  getJWTData:  async (userId: string, oiat: number) => {
+    const  userDoc = await  User.findById(new ObjectId(userId))
+    if(!userDoc) {
+      throw  Error(`User ${userID} not found`)
+    }
+    return  userDoc.toObject({ virtuals:  true });
+  },
+  dataRefreshIntervalInSeconds:  15 * 60,
+  cookieConfig: {
+    useCookie:  true,
+    CSRFProtection: {
+      customHeader: { active:  true }
+      /* 
+      you can choose from several defense techniques for your use case, 
+      we use customHeader here making our api only available through AJAX calls
+      Read more at owasp.org
+      */
+    }
+  }
 })
 
 export  const  jwtMiddleware = authJWTExpress(jwtAuth)
 
 export  interface  UserSession {
-	_id: ObjectId
-	email: string
+  _id: ObjectId
+  email: string
 }
 
 declare  global {
-	namespace  Express {
-		interface  Request {
-			authJWT: AuthJWT<string, UserSession>
-		}
-	}
+  namespace  Express {
+    interface  Request {
+      authJWT: AuthJWT<string, UserSession>
+    }
+  }
 }
 ```
 
@@ -65,15 +65,15 @@ declare  global {
 app.use(jwtMiddleware)
 
 app.post('/login', async (req, res) => {
-	...auth logic
-	const userId = "615f742e884c0dc546ab747a"
-	const { data } = await req.authJWT.generate(userId);
+  ...auth logic
+  const userId = "615f742e884c0dc546ab747a"
+  const { data } = await req.authJWT.generate(userId);
   res.json(data)
 })
 
 app.get('/me',async (req, res) => {
-	const user = await req.authJWT.getData()
-	res.json(user)
+  const user = await req.authJWT.getData()
+  res.json(user)
 })
 ```
 
