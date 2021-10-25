@@ -1,7 +1,11 @@
+NOTICE: This library is a new project, use with caution. I plan to review and test it
+when I catch some time.
 
 A simple library aiming to make use of JWT for sessions easier for simpler apps and exposing some of the internal functions to make advanced use cases easier.
 
-The JWT is created using the generate function, the params it was called with and the original issuing time will be stored in the JWT. After the dataRefreshIntervalInSeconds period passes the middleware will call the function with the stored parameters and attempt to refresh the data. Throwing an error inside the getJWTData function will remove the cookie it is stored in. This enables you to do eg. logout from all devices by checking if the oiat(original issuing time) is older than when the user logged out from all the devices inside the getJWTData, you would then throw an error deleting the cookie and logging the user out from that machine.
+The JWT is created using the generate function, the params it was called with and the original issuing time will be stored alongside the data in the JWT to avoid the need for refresh tokens. After the dataRefreshIntervalInSeconds period passes the middleware will call the function with the stored parameters and attempt to refresh the data. 
+
+Throwing an error inside the getJWTData function will remove the cookie it is stored in. This enables you to do eg. logout from all devices by checking if the oiat(original issuing time) is older than when the user logged out from all the devices inside the getJWTData, you would then throw an error deleting the cookie and logging the user out from that machine. This enables you to easily deal with the revocation scenarios which are often problematic with JWT.
 
 Since the getJWTData calls are made only after the data expires(for most applications 15 minutes should be a good value) it provides a good balance of performance and security. 
 
@@ -16,8 +20,8 @@ import { JWTAuth, authJWTExpress, AuthJWT } from  'auth-jwt-express'
 import { User } from  '../segments/user/user.model';
 
 export  const  jwtAuth = new  JWTAuth<string, UserSession>({
-	////secret generated via > openssl rand -base64 64
-	secret:  "fnh0X8EK8Qi+g8Rye6/AJ3B/GqODvihkrkHXpEl3eC+TD1yPT+EsJ6aMmzF8bFmSnhjQGjFMGAsTdHHnjDxH6Q==",
+  ////secret generated via > openssl rand -base64 64
+  secret:  "fnh0X8EK8Qi+g8Rye6/AJ3B/GqODvihkrkHXpEl3eC+TD1yPT+EsJ6aMmzF8bFmSnhjQGjFMGAsTdHHnjDxH6Q==",
 	getJWTData:  async (userId: string, oiat: number) => {
 		const  userDoc = await  User.findById(new ObjectId(userId))
 		if(!userDoc) {
