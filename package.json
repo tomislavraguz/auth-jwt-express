@@ -1,14 +1,25 @@
 {
   "name": "auth-jwt-express",
   "version": "0.1.6",
-  "description": "",
+  "description": "A library for authentication with express and JWT",
   "main": "./dist/index.js",
+  "keywords": [
+    "express",
+    "connect",
+    "auth",
+    "authn",
+    "authentication",
+    "jwt"
+  ],
+  "author": {
+    "name": "Tomislav Raguž",
+    "email": "tomislav.raguz@outlook.com"
+  },
   "repository": "TomislavRaguz/auth-jwt-express",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc"
   },
-  "author": "tomislav.raguz@outlook.com",
   "license": "MIT",
   "dependencies": {
     "auth-jwt-core": "^0.1.1"

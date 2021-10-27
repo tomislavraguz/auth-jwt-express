@@ -17,7 +17,7 @@ function shouldMethodBeChecked(req: ERequest, methods: ReadonlyArray<typeof HTTP
 export const authJWTExpress = <DataParams, JWTData, ExpandedData = JWTData>(
   authJWT: JWTAuth<DataParams, JWTData>, 
   options?: { 
-    expandSession?: (data: JWTData) => ExpandedData, 
+    expandSession?: (data: JWTData) => ExpandedData | Promise<ExpandedData>, 
     disableMiddlewareRequestVerification?: boolean,
     CSRFTokenFunctions?: {
       getCSRFTokenFromRequest?: (req: ERequest) => string
@@ -86,7 +86,6 @@ export const authJWTExpress = <DataParams, JWTData, ExpandedData = JWTData>(
             const JWTPayload = await authJWT.verify(Authorization, forceDataRefresh)
             data = JWTPayload.data
           } catch (e) {
-            console.log('JWT verify err:', e)
             if(e.name === "TokenExpiredError") {
               const { JWTPayload, JWT } = await req.authJWT.generate(e.payload.dataParams, { 
                 oiat: e.payload.oiat, 

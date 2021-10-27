@@ -7,9 +7,21 @@ The JWT is created using the generate function, the params it was called with an
 
 Throwing an error inside the getJWTData function will remove the cookie it is stored in. This enables you to do eg. logout from all devices by checking if the oiat(original issuing time) is older than when the user logged out from all the devices inside the getJWTData, you would then throw an error deleting the cookie and logging the user out from that machine. This enables you to easily deal with the revocation scenarios which are often problematic with JWT.
 
-Since the getJWTData calls are made only after the data expires(for most applications 15 minutes should be a good value) it provides a good balance of performance and security. 
+When CSRF protection is configured the middleware will reject requests not conforming to the configured policies for conventionaly unsafe HTTP methods by default. You can disable this by setting disableMiddlewareRequestVerification to true in the middleware options if you are running for eg a GraphQL server and all you requests are POST. You can then manually implement
+the same pattern:
 
-Take care that everything in the token is serializable, including the getJWTData function params.
+```ts
+const csrfErrors = await req.authJWT.checkCSRF();
+if(csrfErrors.length) { throw Error('CSRFViolation') }
+```
+
+Since the getJWTData calls are made only after the data expires(for most applications 15 minutes should be a good value) it provides a good balance of performance and security. The optional expandSession function is called with the JWT data and its return value will set as session data. You can use this for sessions which are impractical to fully store in the JWT itself.
+
+Take care that everything stored in the JWT is serializable, including the getJWTData function params.
+
+If using csrf tokens you can customize how they are extracted from the request in the middleware options, by default they are:
+getCSRFTokenFromRequest = (req: ERequest) => req.body["CSRFToken"]
+getCSRFTokenFromSession = (req: ERequest) => req.authJWT.getData().CSRFToken
 
 Here is an example using mongoose:
 
@@ -76,4 +88,17 @@ app.get('/me',async (req, res) => {
   res.json(user)
 })
 ```
-
+```ts
+/*
+since we configured a default custom header defense policy we now need to add the header 
+to our unsafe HTTP method requests
+*/
+await fetch('/api/login', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest"
+    },
+    body: JSON.stringify({ email: "tomislav@raguz.com", password: "********" })
+})
+```
