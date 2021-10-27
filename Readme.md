@@ -15,7 +15,7 @@ const csrfErrors = await req.authJWT.checkCSRF();
 if(csrfErrors.length) { throw Error('CSRFViolation') }
 ```
 
-Since the getJWTData calls are made only after the data expires(for most applications 15 minutes should be a good value) it provides a good balance of performance and security. The optional **expandSession** function is provided, the middleware will call it with the JWT data as the parameter and its return value will set as session data. You can use this for sessions which are impractical to fully store in the JWT itself. If using this option with typescript the third generic parameter of the middleware generating function will be the type of the returned data.
+Since the getJWTData calls are made only after the data expires(for most applications 15 minutes should be a good value) it provides a good balance of performance and security. If the optional **expandSession** function is provided, the middleware will call it with the JWT data as the parameter and its return value will set as session data. You can use this for sessions which are impractical to fully store in the JWT itself. If using this option with typescript the third generic parameter of the middleware generating function will be the type of the returned data.
 
 Take care that everything stored in the JWT is serializable, including the getJWTData function params.
 
@@ -92,8 +92,8 @@ app.get('/me',async (req, res) => {
 ```
 ```ts
 /*
-since we configured a default custom header defense policy we now need to add the header 
-to our unsafe HTTP method requests
+since we configured a custom header defense policy we now need to add the header 
+to our unsafe HTTP method requests, the default header name is X-Requested-With
 */
 await fetch('/api/login', {
     method: 'POST',

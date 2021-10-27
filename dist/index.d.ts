@@ -4,7 +4,7 @@ import { Request as ERequest, Response as EResponse, NextFunction } from 'expres
 export type { AuthJWT };
 export { JWTAuth };
 export declare const authJWTExpress: <DataParams, JWTData, ExpandedData = JWTData>(authJWT: JWTAuth<DataParams, JWTData>, options?: {
-    expandSession?: ((data: JWTData) => ExpandedData) | undefined;
+    expandSession?: ((data: JWTData) => ExpandedData | Promise<ExpandedData>) | undefined;
     disableMiddlewareRequestVerification?: boolean | undefined;
     CSRFTokenFunctions?: {
         getCSRFTokenFromRequest?: ((req: ERequest) => string) | undefined;

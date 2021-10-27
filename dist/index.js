@@ -77,7 +77,6 @@ const authJWTExpress = (authJWT, options) => {
                         data = JWTPayload.data;
                     }
                     catch (e) {
-                        console.log('JWT verify err:', e);
                         if (e.name === "TokenExpiredError") {
                             const { JWTPayload, JWT } = await req.authJWT.generate(e.payload.dataParams, {
                                 oiat: e.payload.oiat,
