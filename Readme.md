@@ -91,11 +91,12 @@ app.get('/me',async (req, res) => {
 })
 ```
 ```ts
+//somewhere in our client code
 /*
 since we configured a custom header defense policy we now need to add the header 
 to our unsafe HTTP method requests, the default header name is X-Requested-With
 */
-await fetch('/api/login', {
+await fetch('/login', {
     method: 'POST',
     headers: {
       "Content-Type": "application/json",
