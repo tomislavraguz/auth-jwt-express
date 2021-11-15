@@ -76,6 +76,8 @@ declare  global {
 ```ts
 ...express app code
 
+app.use(cookieParser())
+
 app.use(jwtMiddleware)
 
 app.post('/login', async (req, res) => {
